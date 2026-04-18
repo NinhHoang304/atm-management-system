@@ -1,0 +1,93 @@
+<div class="atm-container">
+    <!-- Header -->
+    <header class="page-header">
+        <!-- Logo -->
+        <div class="logo">
+            <span class="glory-logo">GLORY</span>
+        </div>
+        <h1>ATM Management System</h1>
+        <div></div>
+    </header>
+
+    <div class="toolbar-container">
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="btn-toolbar btn-primary" (click)="addNewAtm()">
+                + Add New ATM
+            </button>
+            <button class="btn-toolbar btn-refresh" (click)="refreshData()">
+                ↻ Refresh
+            </button>
+        </div>
+        <!-- Last Updated -->
+        <div class="last-updated" *ngIf="lastUpdated$ | async as last">
+            Last updated: {{ last | date:'medium' }}
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading$ | async">
+        <div class="spinner"></div>
+        <p>Loading ATM data...</p>
+    </div>
+
+    <!-- Error -->
+    <div class="error-state" *ngIf="error$ | async as error">
+        <p>{{ error }}</p>
+        <button class="btn btn-refresh" (click)="refreshData()">Try again</button>
+    </div>
+
+    <!-- Main Table -->
+    <div class="table-wrapper" *ngIf="!(loading$ | async)">
+        <table class="atm-table">
+            <thead>
+                <tr>
+                    <th>ATM Name</th>
+                    <th>Manufacturer</th>
+                    <th>Type</th>
+                    <th>Serial Number</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let atm of (atms$ | async) | slice:((currentPage-1)*pageSize):(currentPage*pageSize); trackBy: trackByAtmId">
+                    <td class="name">{{ atm.atmName }}</td>
+                    <td>{{ atm.manufacturer }}</td>
+                    <td>{{ atm.type }}</td>
+                    <td class="serial">{{ atm.serialNumber }}</td>
+                    <td class="image-cell">
+                        <img [src]="atm.image" [alt]="atm.atmName + ' - ' + atm.type"
+                            [title]="atm.atmName + ' (' + atm.manufacturer + ')'" class="atm-img" *ngIf="atm.image">
+                        <span class="no-image" *ngIf="!atm.image">No Image</span>
+                    </td>
+                    <td class="actions">
+                        <button class="btn-action btn-view" (click)="viewAtm(atm)">View</button>
+                        <button class="btn-action btn-edit" (click)="editAtm(atm)">Edit</button>
+                        <button class="btn-action btn-delete" (click)="deleteAtm(atm)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="atms$ | async as atms">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="prevPage()">‹ Previous</button>
+
+        <div class="page-numbers">
+            <button *ngFor="let page of [].constructor(totalPages); let i = index" class="page-btn"
+                [class.active]="currentPage === i + 1" (click)="goToPage(i + 1)">
+                {{ i + 1 }}
+            </button>
+        </div>
+
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next ›</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© Glory Software Vietnam - ATM Management System</p>
+    </footer>
+</div>
