@@ -77,7 +77,8 @@
         <button class="page-btn" [disabled]="currentPage === 1" (click)="prevPage()">‹ Previous</button>
 
         <div class="page-numbers">
-            <button class="page-btn" *ngFor="let page of pages" [class.active]="currentPage === page" (click)="goToPage(page)">
+            <button class="page-btn" *ngFor="let page of pages" [class.active]="currentPage === page"
+                (click)="goToPage(page)">
                 {{ page }}
             </button>
         </div>
@@ -100,3 +101,7 @@
 <app-confirm-dialog *ngIf="showConfirmDialog" [title]="'Confirm deletion'" [message]="deleteConfirmMessage"
     confirmText="Delete" (confirm)="executeDelete()" (cancel)="closeConfirmDialog()">
 </app-confirm-dialog>
+
+<!-- Atm View Modal -->
+<app-atm-view *ngIf="selectedAtmForView" [atm]="selectedAtmForView" (close)="closeViewModal()">
+</app-atm-view>

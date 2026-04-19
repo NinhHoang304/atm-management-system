@@ -7,11 +7,12 @@ import * as ATMSelectors from '../../core/store/atm/atm.selectors';
 import { ATM } from '../../models/atm.model';
 import { AtmFormComponent } from '../atm-form/atm-form.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { AtmViewComponent } from '../atm-view/atm-view.component';
 
 @Component({
   selector: 'app-atm-list',
   standalone: true,
-  imports: [CommonModule, AtmFormComponent, ConfirmDialogComponent],
+  imports: [CommonModule, AtmFormComponent, ConfirmDialogComponent, AtmViewComponent],
   templateUrl: './atm-list.component.html',
   styleUrls: ['./atm-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -37,6 +38,9 @@ export class AtmListComponent implements OnInit, OnDestroy {
   // Modal delete control
   showConfirmDialog = false;
   atmToDelete: ATM | null = null;
+
+  //Modal view
+  selectedAtmForView: ATM | null = null;
 
   get deleteConfirmMessage(): string {
     return `Are you sure you want to delete ATM "${this.atmToDelete?.atmName || ''}"?`;
@@ -95,6 +99,11 @@ export class AtmListComponent implements OnInit, OnDestroy {
   }
 
   viewAtm(atm: ATM): void {
+    this.selectedAtmForView = atm;
+  }
+
+  closeViewModal(): void {
+    this.selectedAtmForView = null;
   }
 
   addNewAtm(): void {
