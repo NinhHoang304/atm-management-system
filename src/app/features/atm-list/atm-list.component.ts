@@ -8,11 +8,13 @@ import { ATM } from '../../models/atm.model';
 import { AtmFormComponent } from '../atm-form/atm-form.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { AtmViewComponent } from '../atm-view/atm-view.component';
+import { ToastService } from '../../services/toast.service';
+import { ToastComponent } from '../../shared/toast/toast.component';
 
 @Component({
   selector: 'app-atm-list',
   standalone: true,
-  imports: [CommonModule, AtmFormComponent, ConfirmDialogComponent, AtmViewComponent],
+  imports: [CommonModule, AtmFormComponent, ConfirmDialogComponent, AtmViewComponent, ToastComponent],
   templateUrl: './atm-list.component.html',
   styleUrls: ['./atm-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -20,6 +22,8 @@ import { AtmViewComponent } from '../atm-view/atm-view.component';
 export class AtmListComponent implements OnInit, OnDestroy {
 
   private store = inject(Store);
+  private toastService = inject(ToastService);
+  toast$ = this.toastService.toast$;
 
   atms$: Observable<ATM[]> = this.store.select(ATMSelectors.selectAllAtms);
   loading$: Observable<boolean> = this.store.select(ATMSelectors.selectAtmsLoading);

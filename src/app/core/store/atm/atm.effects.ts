@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, delay, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, delay, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { interval, of } from 'rxjs';
 import { inject } from '@angular/core';
 import * as ATMActions from './atm.actions';
 import { AtmApiService } from '../../../services/atm-api.service';
 import { ATM } from '../../../models/atm.model';
+import { ToastService } from '../../../services/toast.service';
 
 @Injectable()
 export class AtmEffects {
 
     private actions$ = inject(Actions);
     private atmService = inject(AtmApiService);
+    private toast = inject(ToastService);
 
     // Load ATMs
     loadAtms$ = createEffect(() =>
@@ -64,6 +66,7 @@ export class AtmEffects {
             ofType(ATMActions.addAtm),
             mergeMap(({ atm }) =>
                 this.atmService.addAtm(atm).pipe(
+                    tap(() => this.toast.show('Add ATM successfully')),
                     map((newAtm: ATM) => ATMActions.addAtmSuccess({ atm: newAtm })),
                     catchError(err => of(ATMActions.addAtmFail({ error: err.message })))
                 )
@@ -75,6 +78,7 @@ export class AtmEffects {
     updateAtm$ = createEffect(() =>
         this.actions$.pipe(
             ofType(ATMActions.updateAtm),
+            tap(() => this.toast.show('Update ATM successfully', 'success')),
             map(({ atm }) => ATMActions.updateAtmSuccess({ atm }))
         )
     );
@@ -83,6 +87,7 @@ export class AtmEffects {
     deleteAtm$ = createEffect(() =>
         this.actions$.pipe(
             ofType(ATMActions.deleteAtm),
+            tap(() => this.toast.show('Delete ATM successfully', 'success')),
             map(({ id }) => ATMActions.deleteAtmSuccess({ id }))
         )
     );

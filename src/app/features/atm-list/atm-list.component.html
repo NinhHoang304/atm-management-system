@@ -105,3 +105,9 @@
 <!-- Atm View Modal -->
 <app-atm-view *ngIf="selectedAtmForView" [atm]="selectedAtmForView" (close)="closeViewModal()">
 </app-atm-view>
+
+<app-toast
+    *ngIf="toast$ | async as toast"
+    [message]="toast.message"
+    [type]="toast.type">
+</app-toast>
