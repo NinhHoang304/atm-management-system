@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, delay, map, mergeMap, startWith, switchMap } from 'rxjs/operators';
+import { catchError, delay, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
 import { interval, of } from 'rxjs';
 import { inject } from '@angular/core';
 import * as ATMActions from './atm.actions';
@@ -35,7 +35,6 @@ export class AtmEffects {
                                 'https://thumbs.dreamstime.com/z/24-hour-atm-13645502.jpg'
                             ][Math.floor(Math.random() * 5)]
                         }));
-
                         return ATMActions.loadAtmsSuccess({ atms });
                     }),
                     catchError((error) => {
@@ -48,9 +47,43 @@ export class AtmEffects {
 
     // Auto Refresh every 2 minutes
     autoRefresh$ = createEffect(() =>
-        interval(120000).pipe(
-            startWith(0),
-            switchMap(() => of(ATMActions.loadAtms()))
+        this.actions$.pipe(
+            ofType(ATMActions.loadAtmsSuccess),
+            switchMap(() =>
+                interval(120000).pipe(
+                    map(() => ATMActions.loadAtms()),
+                    takeUntil(this.actions$.pipe(ofType(ATMActions.loadAtms)))
+                )
+            )
+        )
+    );
+
+    // Add ATM
+    addAtm$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(ATMActions.addAtm),
+            mergeMap(({ atm }) =>
+                this.atmService.addAtm(atm).pipe(
+                    map((newAtm: ATM) => ATMActions.addAtmSuccess({ atm: newAtm })),
+                    catchError(err => of(ATMActions.addAtmFail({ error: err.message })))
+                )
+            )
+        )
+    );
+
+    // Update ATM
+    updateAtm$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(ATMActions.updateAtm),
+            map(({ atm }) => ATMActions.updateAtmSuccess({ atm }))
+        )
+    );
+
+    // Delete ATM
+    deleteAtm$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(ATMActions.deleteAtm),
+            map(({ id }) => ATMActions.deleteAtmSuccess({ id }))
         )
     );
 }

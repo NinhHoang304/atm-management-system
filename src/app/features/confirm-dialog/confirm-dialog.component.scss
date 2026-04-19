@@ -1,0 +1,140 @@
+/* Overlay */
+.confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+
+    animation: fadeIn 0.25s ease forwards;
+}
+
+/* Content */
+.confirm-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+
+    animation: modalIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ===== OPEN ANIMATION ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalIn {
+    from {
+        transform: scale(0.9) translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ===== CLOSE ANIMATION ===== */
+.confirm-overlay.closing {
+    animation: fadeOut 0.25s ease forwards !important;
+}
+
+.confirm-content.closing {
+    animation: modalOut 0.25s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes modalOut {
+    to {
+        transform: scale(0.9) translateY(20px);
+        opacity: 0;
+    }
+}
+
+.confirm-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+
+    h3 {
+        margin: 0;
+        color: #1e3a8a;
+        font-size: 18px;
+    }
+}
+
+.confirm-body {
+    padding: 24px;
+    text-align: center;
+    font-size: 15.5px;
+    color: #374151;
+}
+
+.confirm-footer {
+    display: flex;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #e2e8f0;
+    justify-content: flex-end;
+    background: #f8fafc;
+}
+
+.btn-cancel {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-delete {
+    background-color: #ef4444;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background-color: #dc2626;
+}
+
+.spinner-small {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

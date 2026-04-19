@@ -65,7 +65,7 @@
                     <td class="actions">
                         <button class="btn-action btn-view" (click)="viewAtm(atm)">View</button>
                         <button class="btn-action btn-edit" (click)="editAtm(atm)">Edit</button>
-                        <button class="btn-action btn-delete" (click)="deleteAtm(atm)">Delete</button>
+                        <button class="btn-action btn-delete" (click)="confirmDelete(atm)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -77,9 +77,8 @@
         <button class="page-btn" [disabled]="currentPage === 1" (click)="prevPage()">‹ Previous</button>
 
         <div class="page-numbers">
-            <button *ngFor="let page of [].constructor(totalPages); let i = index" class="page-btn"
-                [class.active]="currentPage === i + 1" (click)="goToPage(i + 1)">
-                {{ i + 1 }}
+            <button class="page-btn" *ngFor="let page of pages" [class.active]="currentPage === page" (click)="goToPage(page)">
+                {{ page }}
             </button>
         </div>
 
@@ -91,3 +90,13 @@
         <p>© Glory Software Vietnam - ATM Management System</p>
     </footer>
 </div>
+
+<!-- Atm Form Modal -->
+<app-atm-form *ngIf="showFormModal" [isEditMode]="selectedAtmForEdit !== null" [atmToEdit]="selectedAtmForEdit"
+    (close)="closeFormModal()">
+</app-atm-form>
+
+<!-- Confirm Delete Modal -->
+<app-confirm-dialog *ngIf="showConfirmDialog" [title]="'Confirm deletion'" [message]="deleteConfirmMessage"
+    confirmText="Delete" (confirm)="executeDelete()" (cancel)="closeConfirmDialog()">
+</app-confirm-dialog>

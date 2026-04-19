@@ -1,0 +1,50 @@
+<div class="modal-overlay" [class.closing]="isClosing">
+    <div class="modal-content" [class.closing]="isClosing">
+        <div class="modal-header">
+            <h2>{{ isEditMode ? 'Edit ATM' : 'Add New ATM' }}</h2>
+            <button class="btn-close" (click)="onCancel()">×</button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSave()" class="atm-form">
+
+            <div class="form-group">
+                <label>ATM Name <span class="required">*</span></label>
+                <input type="text" formControlName="atmName" placeholder="Enter ATM name" />
+            </div>
+
+            <div class="form-group">
+                <label>Manufacturer <span class="required">*</span></label>
+                <input type="text" formControlName="manufacturer" placeholder="e.g. Glory, Diebold, NCR" />
+            </div>
+
+            <div class="form-group">
+                <label>Type <span class="required">*</span></label>
+                <input type="text" formControlName="type" placeholder="e.g. Automated Teller Machine" />
+            </div>
+
+            <div class="form-group">
+                <label>Serial Number <span class="required">*</span></label>
+                <input type="text" formControlName="serialNumber" placeholder="Enter serial number" />
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group">
+                <label for="imageUpload">Upload ATM Image</label>
+                <input id="imageUpload" type="file" accept="image/*" (change)="onImageSelected($event)" />
+
+                <!-- Image Preview -->
+                <div class="image-preview" *ngIf="imagePreview">
+                    <img [src]="imagePreview" alt="Preview" />
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+                <button type="submit" class="btn btn-save" [disabled]="form.invalid || isSubmitting">
+                    <span *ngIf="isSubmitting" class="spinner-small"></span>
+                    {{ isSubmitting ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

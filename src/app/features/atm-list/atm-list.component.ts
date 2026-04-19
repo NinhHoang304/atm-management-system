@@ -5,11 +5,13 @@ import { Observable, Subscription } from 'rxjs';
 import * as ATMActions from '../../core/store/atm/atm.actions';
 import * as ATMSelectors from '../../core/store/atm/atm.selectors';
 import { ATM } from '../../models/atm.model';
+import { AtmFormComponent } from '../atm-form/atm-form.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-atm-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AtmFormComponent, ConfirmDialogComponent],
   templateUrl: './atm-list.component.html',
   styleUrls: ['./atm-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,22 +24,38 @@ export class AtmListComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean> = this.store.select(ATMSelectors.selectAtmsLoading);
   error$: Observable<string | null> = this.store.select(ATMSelectors.selectAtmsError);
   lastUpdated$: Observable<Date | null> = this.store.select(ATMSelectors.selectLastUpdated);
+
   currentPage = 1;
   pageSize = 10;
   totalPages = 1;
+  pages: number[] = [];
+
+  // Modal add/edit control
+  showFormModal = false;
+  selectedAtmForEdit: ATM | null = null;
+
+  // Modal delete control
+  showConfirmDialog = false;
+  atmToDelete: ATM | null = null;
+
+  get deleteConfirmMessage(): string {
+    return `Are you sure you want to delete ATM "${this.atmToDelete?.atmName || ''}"?`;
+  }
 
   private subscription = new Subscription();
 
   constructor() { }
 
   ngOnInit(): void {
-    // Load data when entering the page
+    // Load data
     this.store.dispatch(ATMActions.loadAtms());
 
-    // Track lastUpdated for pagination
+    // Pagination
     this.subscription.add(
       this.atms$.subscribe(atms => {
-        this.totalPages = Math.ceil(atms.length / this.pageSize);
+        this.totalPages = Math.ceil(atms.length / this.pageSize) || 1;
+        this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
+
         if (this.currentPage > this.totalPages) {
           this.currentPage = 1;
         }
@@ -80,12 +98,35 @@ export class AtmListComponent implements OnInit, OnDestroy {
   }
 
   addNewAtm(): void {
+    this.selectedAtmForEdit = null;
+    this.showFormModal = true;
   }
 
   editAtm(atm: ATM): void {
+    this.selectedAtmForEdit = atm;
+    this.showFormModal = true;
   }
 
-  deleteAtm(atm: ATM): void {
+  closeFormModal(): void {
+    this.showFormModal = false;
+    this.selectedAtmForEdit = null;
+  }
+
+  confirmDelete(atm: ATM): void {
+    this.atmToDelete = atm;
+    this.showConfirmDialog = true;
+  }
+
+  executeDelete(): void {
+    if (this.atmToDelete?.id) {
+      this.store.dispatch(ATMActions.deleteAtm({ id: this.atmToDelete.id }));
+    }
+    this.closeConfirmDialog();
+  }
+
+  closeConfirmDialog(): void {
+    this.showConfirmDialog = false;
+    this.atmToDelete = null;
   }
 
   trackByAtmId(index: number, atm: ATM): number | undefined {

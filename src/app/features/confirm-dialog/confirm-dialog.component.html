@@ -1,0 +1,22 @@
+<div class="confirm-overlay" [class.closing]="isClosing">
+    <div class="confirm-content" [class.closing]="isClosing">
+        <div class="confirm-header">
+            <h3>{{ title }}</h3>
+        </div>
+
+        <div class="confirm-body">
+            <p>{{ message }}</p>
+        </div>
+
+        <div class="confirm-footer">
+            <button class="btn btn-cancel" (click)="onCancel()" [disabled]="isSubmitting">
+                {{ cancelText }}
+            </button>
+
+            <button class="btn btn-delete" (click)="onConfirm()" [disabled]="isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-small"></span>
+                {{ isSubmitting ? 'Deleting...' : confirmText }}
+            </button>
+        </div>
+    </div>
+</div>

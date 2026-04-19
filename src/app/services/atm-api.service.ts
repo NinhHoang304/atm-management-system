@@ -11,14 +11,26 @@ export class AtmApiService {
 
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getAtms(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  // ==================== GET ====================
+  getAtms(): Observable<ATM[]> {
+    return this.http.get<ATM[]>(this.apiUrl);
   }
 
-  addAtm(atm: Partial<ATM>): Observable<any> {
-    return this.http.post(this.apiUrl, atm);
+  // ==================== ADD ====================
+  addAtm(atm: Partial<ATM>): Observable<ATM> {
+    return this.http.post<ATM>(this.apiUrl, atm);
+  }
+
+  // ==================== UPDATE ====================
+  updateAtm(atm: ATM): Observable<ATM> {
+    return this.http.put<ATM>(`${this.apiUrl}/${atm.id}`, atm);
+  }
+
+  // ==================== DELETE ====================
+  deleteAtm(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
 }

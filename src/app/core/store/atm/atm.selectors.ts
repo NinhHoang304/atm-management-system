@@ -1,29 +1,29 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { ATMState } from './atm.state';
 
-export const selectATMState = createFeatureSelector<ATMState>('atm');
+export const selectAtmState = createFeatureSelector<ATMState>('atm');
 
 export const selectAllAtms = createSelector(
-    selectATMState,
-    (state: ATMState) => state.atms
+    selectAtmState,
+    state => state.atms
 );
 
 export const selectAtmsLoading = createSelector(
-    selectATMState,
-    (state: ATMState) => state.loading
+    selectAtmState,
+    state => state.loading
 );
 
 export const selectAtmsError = createSelector(
-    selectATMState,
-    (state: ATMState) => state.error
+    selectAtmState,
+    state => state.error
 );
 
 export const selectLastUpdated = createSelector(
-    selectATMState,
-    (state: ATMState) => state.lastUpdated
+    selectAtmState,
+    state => state.lastUpdated
 );
 
 export const selectAtmsCount = createSelector(
     selectAllAtms,
-    (atms) => atms.length
+    atms => atms.length
 );
